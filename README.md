@@ -1,6 +1,6 @@
 # Wow Recipies
 
-This is the front end part of a cuisine Web App, equipped with applicable back end APIs.
+This is the front end part of a cuisine Web App written in modern JavaScript and HTML5, equipped with applicable back end APIs.
 
 ## Some features:
 - Using the MVC architecture.
