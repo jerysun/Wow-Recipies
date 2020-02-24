@@ -27,12 +27,17 @@ const controlSearch = async() => {
         searchView.clearResults();
         renderLoader(elements.searchRes);
 
-        // 4) Search for recipes
-        await state.search.getResults();
+        try {
+            // 4) Search for recipes
+            await state.search.getResults();
 
-        // 5) Render recipes on UI
-        searchView.renderResults(state.search.recipes);
-        clearLoader();
+            // 5) Render recipes on UI
+            clearLoader();
+            searchView.renderResults(state.search.recipes);
+        } catch (err) {
+            alert('Something wrong with the search...');
+            clearLoader();
+        }
     }
 };
 
@@ -53,6 +58,33 @@ elements.searchResPages.addEventListener('click', e => {
 /**
  * Recipe Controller
  */
-const r = new Recipe(46956);
-r.getRecipe();
-console.log(r);
+const controlRecipe = async() => {
+    // Get ID from url
+    const id = window.location.hash.replace('#', '');
+
+    if (id) {
+        // Prepare UI for changes
+
+        // Create new recipe object
+        state.recipe = new Recipe(id);
+
+        // Get recipe data
+        try {
+            await state.recipe.getRecipe();
+
+            // Calculate servings and time
+            state.recipe.calcTime();
+            state.recipe.calcServings();
+
+            // Render recipe
+            console.log(state.recipe); // OK, but when we refresh the page, everything is gone! Need to fix because
+                                       // the user could bookmark the url. So need to add a load event listener too
+        } catch (err) {
+            alert('Error processing recipe!');
+        }
+    }
+};
+
+// window.addEventListener('hashchange', controlRecipe);
+// window.addEventListener('load', controlRecipe);
+[ 'hashchange', 'load' ].forEach(event => window.addEventListener(event, controlRecipe));
