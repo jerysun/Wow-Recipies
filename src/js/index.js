@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import { elements, renderLoader, clearLoader } from './views/base';
 
 /** Global state of the app
@@ -64,6 +65,8 @@ const controlRecipe = async() => {
 
     if (id) {
         // Prepare UI for changes
+        recipeView.clearRecipe();
+        renderLoader(elements.recipe);// the param is the parent so it knows where to render it
 
         // Create new recipe object
         state.recipe = new Recipe(id);
@@ -79,8 +82,10 @@ const controlRecipe = async() => {
             state.recipe.calcServings();
 
             // Render recipe
-            console.log(state.recipe); // OK, but when we refresh the page, everything is gone! Need to fix because
-                                       // the user could bookmark the url. So need to add a load event listener too
+            clearLoader();
+            recipeView.renderRecipe(state.recipe);
+            // console.log(state.recipe);// OK, but when we refresh the page, everything is gone! Need to fix because
+                                         // the user could bookmark the url. So need to add a load event listener too
         } catch (err) {
             alert('Error processing recipe!');
         }
