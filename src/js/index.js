@@ -68,6 +68,11 @@ const controlRecipe = async() => {
         recipeView.clearRecipe();
         renderLoader(elements.recipe);// the param is the parent so it knows where to render it
 
+        // Highlight selected search item
+        if (state.search) {
+            searchView.highlightSelected(id);
+        }
+
         // Create new recipe object
         state.recipe = new Recipe(id);
 

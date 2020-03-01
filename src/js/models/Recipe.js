@@ -64,9 +64,9 @@ export default class Recipe {
                     count = eval(arrCount.join('+'));
                 }
 
-                if (count.countDecimals() > 2) {
+                /* if (count.countDecimals() > 2) {
                     count = count.toFixed(2);
-                }
+                } */
 
                 objIng = {
                     count: count,

@@ -1,7 +1,21 @@
 import { elements } from './base';
+import { Fraction } from 'fractional';
+import { countDecimals, oneDecimalInfiniteToFraction, twoDecimalInfiniteToFraction } from '../commonLib';
+
 
 export const clearRecipe = () => {
     elements.recipe.innerHTML = '';
+};
+
+const formatCount = count => {
+    if (count) {
+        // console.log(`0.0343434 = ${twoDecimalInfiniteToFraction(0.0343434)}`); // 17/495
+        if (count.countDecimals() > 3) { // 1/8 = 0.125, 1/3 = 0.33333...
+            return oneDecimalInfiniteToFraction(count);
+        }
+        return new Fraction(count).toString();
+    }
+    return '1';
 };
 
 const createIngredient = ingredient => `
@@ -9,7 +23,7 @@ const createIngredient = ingredient => `
         <svg class="recipe__icon">
             <use href="img/icons.svg#icon-check"></use>
         </svg>
-        <div class="recipe__count">${ingredient.count}</div>
+        <div class="recipe__count">${formatCount(ingredient.count)}</div>
         <div class="recipe__ingredient">
             <span class="recipe__unit">${ingredient.unit}</span>
             ${ingredient.ingredient}
