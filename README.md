@@ -12,6 +12,8 @@ This is the front end part of a cuisine Web App written in modern JavaScript and
 
 ## How to run it?
 - Install Node.js and NPM
+- Install Webpack and Babel
+- Install live-server
 - Execute this command from the project directory: npm run start
 
 Have fun,

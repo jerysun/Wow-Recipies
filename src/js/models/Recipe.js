@@ -93,4 +93,19 @@ export default class Recipe {
         });
         this.ingredients = newIngredients;
     }
+
+    updateServings(type) { // - button: decrease; + button: increase
+        // Servings
+        let newServings = 1;
+
+        if (type === 'dec' && this.servings > 1) {
+            newServings = this.servings - 1;
+        } else if (type === 'inc') {
+            newServings = this.servings + 1;
+        }
+
+        // Ingredients
+        this.ingredients.forEach(ing => ing.count *= newServings / this.servings);
+        this.servings = newServings;
+    }
 }
