@@ -1,9 +1,11 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
+import * as likesView from './views/likesView';
 import { elements, renderLoader, clearLoader } from './views/base';
 
 /** Global state of the app
@@ -66,6 +68,8 @@ const controlRecipe = async() => {
     // Get ID from url
     const id = window.location.hash.replace('#', '');
 
+    likesView.toggleLikeMenu(!state.likes ? 0 : state.likes.getNumLikes());
+
     if (id) {
         // Prepare UI for changes
         recipeView.clearRecipe();
@@ -91,7 +95,7 @@ const controlRecipe = async() => {
 
             // Render recipe
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+            recipeView.renderRecipe(state.recipe, !state.likes ? false : state.likes.isLiked(state.recipe.id));
             // console.log(state.recipe);// OK, but when we refresh the page, everything is gone! Need to fix because
                                          // the user could bookmark the url. So need to add a load event listener too
         } catch (err) {
@@ -138,6 +142,39 @@ elements.shopping.addEventListener('click', e => {
     }
 });
 
+/**
+ * Likes Controller
+ */
+const controlLike = () => {
+    if (!state.likes) {
+        state.likes = new Likes();
+    }
+
+    const currentID = state.recipe.id;
+
+    if (!state.likes.isLiked(currentID)) { // To like
+        // Add Like to the state
+        const newLike = state.likes.addLike(currentID, state.recipe.title, state.recipe.author, state.recipe.img);
+
+        // Toggle the like button
+        likesView.toggleLikeBtn(true);
+
+        // Add like to UI list
+        likesView.renderLike(newLike);
+        console.log(state.likes);
+    } else { // To dislike
+        // Remove Like from the state
+        state.likes.deleteLike(currentID);
+
+        // Toggle the like button
+        likesView.toggleLikeBtn(false);
+
+        // Remove like from UI list
+        likesView.deleteLike(currentID);
+    }
+
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
+};
 
 // Handling recipe button clicks
 elements.recipe.addEventListener('click', e => {
@@ -146,11 +183,12 @@ elements.recipe.addEventListener('click', e => {
     } else if (e.target.matches('.btn-increase, .btn-increase *')) {
         state.recipe.updateServings('inc');
     } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+        // Add ingredients to shopping list
         controlList();
+    } else if (e.target.matches('.recipe__love, .recipe__love *')) {
+        // Populate or remove the Likes
+        controlLike();
     }
 
     recipeView.updateServingsIngredients(state.recipe);
 });
-
-window.l = new List();
-
